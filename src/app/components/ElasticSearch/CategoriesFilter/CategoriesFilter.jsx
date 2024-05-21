@@ -1,10 +1,9 @@
 import { useState, useContext, useEffect } from "react";
-import { Autocomplete } from "@mui/material";
-import { TextField, Chip } from "@mui/material";
+
 import { ElasticSearchContext } from "@/app/contexts/ElasticSearchContext";
-import { handleSearch } from "@/app/actions/actions";
 import { FILTER_FIELDS } from "@/app/filterFields";
 import {AutoCompleteInput} from "@/app/components/ElasticSearch/CategoriesFilter/NewCategoriesFilter";
+import {initialFilterState} from "@/app/contexts/ElasticSearchProvider";
 
 export function CategoriesFilter() {
 
@@ -15,6 +14,25 @@ export function CategoriesFilter() {
               <AutoCompleteInput  key={`${field.uiName}-select`}  label={field.uiName.charAt(0).toUpperCase() + field.uiName.slice(1)} field={field}  id={`${field.uiName}-select`}/>
         )
       })}
+<ClearAllFilters/>
     </div>
   );
+}
+function ClearAllFilters(){
+  const {setSelectedFilters}=useContext(ElasticSearchContext);
+
+function resetFilters(){
+    setSelectedFilters(initialFilterState)
+  const clearIcons=document.querySelectorAll("[data-testid=CloseIcon]")
+  window.setTimeout(()=>{
+    clearIcons.forEach((icon)=>{
+        icon.parentElement.click()
+    })
+  },50)
+}
+  return(
+    <div className="flex justify-center">
+      <button onClick={()=>resetFilters()} className="bg-[#2f528f] text-white p-2 rounded-lg">Clear All Filters</button>
+    </div>
+  )
 }

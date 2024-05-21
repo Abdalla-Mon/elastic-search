@@ -31,7 +31,6 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
                 ? createRangeObject(field.filterId, selectedFilters[index])
                 : createTermsObject(field.filterId, selectedFilters[index]),
     );
-
     const aggs = {
         unique_organizations: {
             terms: {
@@ -61,6 +60,7 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
 
     const response = await client.search(elasticSearchParams);
     const data = response;
+
     const documents = data.hits.hits.map((hit) => hit._source);
     const total = data.hits.total;
     const uniqueOrganizations = data.aggregations.unique_organizations.buckets.map(
@@ -70,5 +70,6 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
         documents,
         total: total.value,
         uniqueOrganizations,
+        uniques:data.aggregations
     };
 }

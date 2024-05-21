@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import {Button, FormControl, IconButton, TextField} from "@mui/material";
 import { ElasticSearchContext } from "@/app/contexts/ElasticSearchContext";
 import { useContext, useRef } from "react";
 
@@ -8,6 +8,10 @@ export default function ElasticSearchField() {
 
     return (
           <div className="flex gap-5 items-center">
+              <FormControl
+              className={"relative w-full"}
+              >
+
               <TextField
                     inputRef={inputRef}
                     id="outlined-basic"
@@ -15,6 +19,18 @@ export default function ElasticSearchField() {
                     variant="filled"
                     fullWidth
               />
+                  <IconButton
+                        onClick={() => {
+                            inputRef.current.value = "";
+                            setSearch("");
+                        }}
+
+                        className={"absolute right-0 top-1/2 transform -translate-y-1/2 w-[50px] h-[50px]   text-xl  bg-white hover:bg-gray-200"}
+                  >
+
+                      X
+                  </IconButton>
+              </FormControl>
               <Button
                     onClick={() => {
                         if(inputRef.current.value.trim() === "") {

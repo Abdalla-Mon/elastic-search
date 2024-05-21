@@ -1,6 +1,7 @@
 "use server";
 import { Client } from "@elastic/elasticsearch";
 import { FILTER_FIELDS, indexName, queryFields } from "@/app/filterFields";
+import {createRangeObject, createTermsObject} from "@/app/function/function";
 
 
 
@@ -11,30 +12,7 @@ const client = new Client({
     },
 });
 
- function createTermsObject(fieldName, values) {
 
-    return values.length ? [{ terms: { [fieldName]: values } }] : [];
-}
-
- function createRangeObject(fieldName, values) {
-    if (values.length) {
-        const years = values.map((value) => new Date(value).getFullYear());
-        const minYear = Math.min(...years);
-        const maxYear = Math.max(...years);
-        return [
-            {
-                range: {
-                    [fieldName]: {
-                        gte: `${minYear}-01-01`,
-                        lte: `${maxYear}-12-31`,
-                    },
-                },
-            },
-        ];
-    } else {
-        return [];
-    }
-}
 export async function handleFilterFetch(uiName,filterId, search,selectedFilters) {
     try {
         const mustQuery = [
@@ -50,10 +28,11 @@ export async function handleFilterFetch(uiName,filterId, search,selectedFilters)
                   },
         ];
 
+
         const filterMust =FILTER_FIELDS.flatMap((field, index) =>
               field.uiName === "dates"
-                    ? createRangeObject(field.filterId, selectedFilters[index])
-                    : createTermsObject(field.filterId, selectedFilters[index]),
+                    ? createRangeObject(field.filterId,selectedFilters[index])
+                    : createTermsObject(field.filterId, field.filterId===filterId?[]: selectedFilters[index]),
         );
 
         const aggs = {

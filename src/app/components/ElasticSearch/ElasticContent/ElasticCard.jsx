@@ -10,7 +10,7 @@ export function ElasticCard({ data }) {
   const ref = useRef();
 
   useEffect(() => {
-      console.log("rendered")
+      // console.log("rendered")
     const checkOverflow = () => {
       if (ref.current) {
         setIsOverflowing(ref.current.scrollHeight > ref.current.offsetHeight);

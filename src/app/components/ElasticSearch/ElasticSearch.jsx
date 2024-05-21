@@ -15,7 +15,6 @@ export default function ElasticSearch() {
 
 
   const [show, setShow] = useState(false);
-
   useEffect(() => {
     fetchData();
   }, [search, page, size, selectedFilters]);
@@ -36,7 +35,7 @@ export default function ElasticSearch() {
             <div className={"flex flex-col gap-5"}>
               <div className={"my-auto"}>
                 <span className={"font-bold"}>Total items :</span>{" "}
-                {data ? data.total : 0}
+                {data ? data.documents?.length<10?data.documents.length:data.total : 0}
               </div>
               <div className={"my-auto"}>
                 <span className={"font-bold"}>Organisation Count :</span>{" "}

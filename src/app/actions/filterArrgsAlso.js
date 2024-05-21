@@ -35,7 +35,7 @@ const client = new Client({
 });
 
 
-export async function handleFilterFetch(uiName,filterId, search,selectedFilters) {
+export async function handleFilterFetch2(uiName,filterId, search,selectedFilters) {
     try {
         const mustQuery = [
             search === ""
@@ -122,7 +122,6 @@ export async function handleFilterFetch(uiName,filterId, search,selectedFilters)
 
         const response = await client.search(elasticSearchParams);
         const data = response;
-        console.log(data.aggregations[`unique_${uiName}`].buckets)
         if(!data){
             return [];
         }
@@ -143,6 +142,7 @@ export async function handleFilterFetch(uiName,filterId, search,selectedFilters)
                       return bucket.key;
                   }
               });
+
 
         return uniqueFilter;
     } catch (error) {

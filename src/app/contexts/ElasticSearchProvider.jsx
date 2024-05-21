@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ElasticSearchContext } from "./ElasticSearchContext";
 import { FILTER_FIELDS } from "@/app/filterFields";
 
-const initialFilterState = FILTER_FIELDS.reduce((acc, field) => {
+export const initialFilterState = FILTER_FIELDS.reduce((acc, field) => {
     acc[field.uiName] = [];
     return acc;
 }, {});
