@@ -10,6 +10,7 @@ export function ElasticCard({ data }) {
   const ref = useRef();
 
   useEffect(() => {
+      console.log("rendered")
     const checkOverflow = () => {
       if (ref.current) {
         setIsOverflowing(ref.current.scrollHeight > ref.current.offsetHeight);
@@ -17,29 +18,29 @@ export function ElasticCard({ data }) {
     };
     checkOverflow();
   }, [data]);
-
-  const highlightedText = useMemo(() => {
-    if (!data[descriptionField]) return "";
-
-    const description = data[descriptionField];
-    const searchTerm = search.toLowerCase();
-    const index = description.toLowerCase().indexOf(searchTerm);
-    if (index !== -1) {
-      const trimmedText = index > 0 ? '...' + description.substring(index) : description;
-      const parts = trimmedText.split(new RegExp(`(${searchTerm})`, 'gi'));
-      return (
-            <>
-              {parts.map((part, i) => (
-                    <span key={i} style={part.toLowerCase() === searchTerm ? { backgroundColor: 'yellow' } : {}}>
-              {part}
-            </span>
-              ))}
-            </>
-      );
-    } else {
-      return data[descriptionField];
-    }
-  }, [data, search]);
+const highlightedText = data[descriptionField]
+  // const highlightedText = useMemo(() => {
+  //   if (!data[descriptionField]) return "";
+  //
+  //   const description = data[descriptionField];
+  //   const searchTerm = search.toLowerCase();
+  //   const index = description.toLowerCase().indexOf(searchTerm);
+  //   if (index !== -1) {
+  //     const trimmedText = index > 0 ? '...' + description.substring(index) : description;
+  //     const parts = trimmedText.split(new RegExp(`(${searchTerm})`, 'gi'));
+  //     return (
+  //           <>
+  //             {parts.map((part, i) => (
+  //                   <span key={i} style={part.toLowerCase() === searchTerm ? { backgroundColor: 'yellow' } : {}}>
+  //             {part}
+  //           </span>
+  //             ))}
+  //           </>
+  //     );
+  //   } else {
+  //     return data[descriptionField];
+  //   }
+  // }, [data, search]);
 
   return (
         <Card sx={{ boxShadow: 3 }} className="border border-gray-200">

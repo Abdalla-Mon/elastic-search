@@ -9,7 +9,7 @@ const client = new Client({
         apiKey: process.env.ELASTIC_API_KEY,
     },
 });
-export async function handleSearch(q, page = 1, size = 2, selectedFilters) {
+export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
     const mustQuery = [
         q === ""
               ? { match_all: {} }
@@ -22,7 +22,7 @@ export async function handleSearch(q, page = 1, size = 2, selectedFilters) {
                   },
               },
     ];
-      selectedFilters= FILTER_FIELDS.map(
+    selectedFilters= FILTER_FIELDS.map(
           (field) => selectedFilters[field.uiName],
     );
 

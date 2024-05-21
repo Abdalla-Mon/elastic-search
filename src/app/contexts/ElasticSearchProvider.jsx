@@ -1,7 +1,6 @@
 "use client"
 import { useState } from "react";
 import { ElasticSearchContext } from "./ElasticSearchContext";
-import { handleSearch } from "@/app/actions/search";
 import { FILTER_FIELDS } from "@/app/filterFields";
 
 const initialFilterState = FILTER_FIELDS.reduce((acc, field) => {
