@@ -16,9 +16,9 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
               : {
                   multi_match: {
                       query: q,
-                      type: "best_fields",
+                      type: "phrase_prefix",
                       fields: queryFields,
-                      operator: "or",
+                      operator: "or"
                   },
               },
     ];
@@ -35,14 +35,17 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
         unique_organizations: {
             terms: {
                 field: "organisation_name.keyword",
+                size: 1000,
+            show_term_doc_count_error: true
             },
-        },
-    };
 
+        },
+
+    };
     const elasticSearchParams = {
         index: indexName,
         size: size,
-        from: page,
+        from: (page - 1) * size,
         body: {
             query: {
                 bool: {
@@ -55,6 +58,7 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
                 },
             },
             aggs: aggs,
+
         },
     };
 

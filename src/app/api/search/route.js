@@ -1,7 +1,7 @@
 import { Client } from "@elastic/elasticsearch";
 import { FILTER_FIELDS, indexName, queryFields } from "@/app/filterFields";
 import {createRangeObject, createTermsObject} from "@/app/function/function";
-import {handleSearch} from "@/app/actions/search";
+import {handleSearch} from "@/app/services/search";
 
 const client = new Client({
   node: process.env.ELASTIC_NODE_URL,

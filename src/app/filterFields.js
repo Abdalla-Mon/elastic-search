@@ -25,6 +25,7 @@ export const FILTER_FIELDS = [
     filterId: "filter_date",
   },
 ];
+
 export const queryFields = ["title", "text"];
 export const titleFields = queryFields[0];
 export const descriptionField = queryFields[1];

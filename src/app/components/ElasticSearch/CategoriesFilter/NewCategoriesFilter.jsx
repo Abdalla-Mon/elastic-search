@@ -1,9 +1,8 @@
 import {useContext, useEffect, useRef, useState} from "react";
 import {ElasticSearchContext} from "@/app/contexts/ElasticSearchContext";
 import {Autocomplete, Chip, TextField} from "@mui/material";
-import {handleFilterFetch} from "@/app/actions/filter";
 import {FILTER_FIELDS} from "@/app/filterFields";
-import {handleFilterFetch2} from "@/app/actions/filterArrgsAlso";
+import {getFiltersFilteredByArrgs} from "@/app/services/getFiltersFilteredByArrgs";
 
 
 export function AutoCompleteInput({field,id="autocomplete",label}){
@@ -29,7 +28,7 @@ export function AutoCompleteInput({field,id="autocomplete",label}){
        const filterArgs = FILTER_FIELDS.map(
              (field) => selectedFilters[field.uiName],
        );
-        const fetchedData=await handleFilterFetch2(field.uiName,field.filterId,search,filterArgs)
+        const fetchedData=await getFiltersFilteredByArrgs(field.uiName,field.filterId,search,filterArgs)
         setData(fetchedData)
         setLoading(false)
     }

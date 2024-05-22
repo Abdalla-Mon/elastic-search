@@ -4,11 +4,10 @@ import { ElasticSearchContext } from "@/app/contexts/ElasticSearchContext";
 import { descriptionField, displayFields, titleFields } from "@/app/filterFields";
 
 export function ElasticCard({ data }) {
-  const { search } = useContext(ElasticSearchContext);
+  const { search,loading } = useContext(ElasticSearchContext);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const ref = useRef();
-
   useEffect(() => {
       // console.log("rendered")
     const checkOverflow = () => {
@@ -18,29 +17,22 @@ export function ElasticCard({ data }) {
     };
     checkOverflow();
   }, [data]);
-const highlightedText = data[descriptionField]
-  // const highlightedText = useMemo(() => {
-  //   if (!data[descriptionField]) return "";
-  //
-  //   const description = data[descriptionField];
-  //   const searchTerm = search.toLowerCase();
-  //   const index = description.toLowerCase().indexOf(searchTerm);
-  //   if (index !== -1) {
-  //     const trimmedText = index > 0 ? '...' + description.substring(index) : description;
-  //     const parts = trimmedText.split(new RegExp(`(${searchTerm})`, 'gi'));
-  //     return (
-  //           <>
-  //             {parts.map((part, i) => (
-  //                   <span key={i} style={part.toLowerCase() === searchTerm ? { backgroundColor: 'yellow' } : {}}>
-  //             {part}
-  //           </span>
-  //             ))}
-  //           </>
-  //     );
-  //   } else {
-  //     return data[descriptionField];
-  //   }
-  // }, [data, search]);
+
+    if(loading){
+        return null;
+    }
+    const description = data[descriptionField].toLowerCase();
+    const searchTerms = search.toLowerCase().split(' ');
+
+    const regex = new RegExp(`(${searchTerms.join('|')})`, 'gi');
+
+    const parts = description.split(regex);
+
+    const highlightedText = parts.map((part, index) =>
+          searchTerms.includes(part.toLowerCase())
+                ? <span key={index} style={{backgroundColor: 'yellow'}}>{part}</span>
+                : part
+    );
 
   return (
         <Card sx={{ boxShadow: 3 }} className="border border-gray-200">
@@ -70,7 +62,7 @@ const highlightedText = data[descriptionField]
                   }}
             >
               <Typography variant="body1" color="text.secondary">
-                {highlightedText}
+                  {highlightedText}
               </Typography>
               {!isExpanded && isOverflowing && (
                     <Box
@@ -111,3 +103,28 @@ export function DisplayData({ arrayOfData, extra, name }) {
         </Typography>
   );
 }
+
+
+// need to be replaced to enhance performance
+// const highlightedText = useMemo(() => {
+//   if (!data[descriptionField]) return "";
+//
+//   const description = data[descriptionField];
+//   const searchTerm = search.toLowerCase();
+//   const index = description.toLowerCase().indexOf(searchTerm);
+//   if (index !== -1) {
+//     const trimmedText = index > 0 ? '...' + description.substring(index) : description;
+//     const parts = trimmedText.split(new RegExp(`(${searchTerm})`, 'gi'));
+//     return (
+//           <>
+//             {parts.map((part, i) => (
+//                   <span key={i} style={part.toLowerCase() === searchTerm ? { backgroundColor: 'yellow' } : {}}>
+//             {part}
+//           </span>
+//             ))}
+//           </>
+//     );
+//   } else {
+//     return data[descriptionField];
+//   }
+// }, [data, search]);

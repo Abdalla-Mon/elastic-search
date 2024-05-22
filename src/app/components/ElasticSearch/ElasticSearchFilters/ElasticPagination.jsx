@@ -1,9 +1,14 @@
 import {Pagination} from "@mui/material";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {ElasticSearchContext} from "@/app/contexts/ElasticSearchContext";
 
 export default function ElasticPagination(){
     const { page, setPage, size,data}=useContext(ElasticSearchContext)
+    useEffect(()=>{
+        if(data?.documents?.length===0&&data?.total){
+            setPage(1)
+        }
+    },[data?.documents?.length,data?.total])
     if(!data){
         return null;
     }

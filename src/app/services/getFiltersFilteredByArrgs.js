@@ -1,30 +1,8 @@
 "use server";
 import { Client } from "@elastic/elasticsearch";
 import { FILTER_FIELDS, indexName, queryFields } from "@/app/filterFields";
-function createTermsObject(fieldName, values) {
+import {createRangeObject, createTermsObject} from "@/app/function/function";
 
-    return values.length ? [{ terms: { [fieldName]: values } }] : [];
-}
-
-function createRangeObject(fieldName, values) {
-    if (values.length) {
-        const years = values.map((value) => new Date(value).getFullYear());
-        const minYear = Math.min(...years);
-        const maxYear = Math.max(...years);
-        return [
-            {
-                range: {
-                    [fieldName]: {
-                        gte: `${minYear}-01-01`,
-                        lte: `${maxYear}-12-31`,
-                    },
-                },
-            },
-        ];
-    } else {
-        return [];
-    }
-}
 
 
 const client = new Client({
@@ -35,7 +13,7 @@ const client = new Client({
 });
 
 
-export async function handleFilterFetch2(uiName,filterId, search,selectedFilters) {
+export async function getFiltersFilteredByArrgs(uiName,filterId, search,selectedFilters) {
     try {
         const mustQuery = [
             search === ""
@@ -43,9 +21,9 @@ export async function handleFilterFetch2(uiName,filterId, search,selectedFilters
                   : {
                       multi_match: {
                           query: search,
-                          type: "best_fields",
+                          type: "phrase_prefix",
                           fields: queryFields,
-                          operator: "and",
+                          operator: "or",
                       },
                   },
         ];
@@ -56,7 +34,7 @@ export async function handleFilterFetch2(uiName,filterId, search,selectedFilters
                     ? createRangeObject(field.filterId,selectedFilters[index])
                     : createTermsObject(field.filterId, field.filterId===filterId?[]: selectedFilters[index]),
         );
-        const aggs2 = {
+        const filteredByOtherFilters = {
             [`unique_${uiName}`]: uiName === "dates"
                   ? {
                       date_histogram: {
@@ -72,7 +50,7 @@ export async function handleFilterFetch2(uiName,filterId, search,selectedFilters
                   },
         };
 
-        const aggs =filterMust.length<1?aggs2: {
+        const aggs =filterMust.length<1?filteredByOtherFilters: {
             [`unique_${uiName}`]: {
                 filter: {
                     bool: {
@@ -91,6 +69,8 @@ export async function handleFilterFetch2(uiName,filterId, search,selectedFilters
                           : {
                               terms: {
                                   field: filterId,
+                                  size: 100
+
                               },
                           },
                 },
@@ -106,16 +86,18 @@ export async function handleFilterFetch2(uiName,filterId, search,selectedFilters
                 bool: {
                     must: filterMust,
                 },
+
             };
         }
 
         const elasticSearchParams = {
             index: indexName,
-            size: 0, // We don't need the documents, only the aggregations
+            size: 0,
             body: {
                 query: {
                     bool: boolQuery,
                 },
+                _source: false,
                 aggs: aggs,
             },
         };
@@ -128,7 +110,6 @@ export async function handleFilterFetch2(uiName,filterId, search,selectedFilters
         const uniqueFilter = filterMust.length < 1
               ? data.aggregations[`unique_${uiName}`].buckets.map((bucket) => {
                   if (uiName === "dates") {
-                      // Convert Unix timestamp to date
                       return new Date(bucket.key).toISOString().split("T")[0];
                   } else {
                       return bucket.key;
@@ -136,7 +117,6 @@ export async function handleFilterFetch2(uiName,filterId, search,selectedFilters
               })
               : data.aggregations[`unique_${uiName}`][`unique_${uiName}`].buckets.map((bucket) => {
                   if (uiName === "dates") {
-                      // Convert Unix timestamp to date
                       return new Date(bucket.key).toISOString().split("T")[0];
                   } else {
                       return bucket.key;
