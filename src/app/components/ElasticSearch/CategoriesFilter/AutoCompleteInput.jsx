@@ -11,6 +11,7 @@ export function AutoCompleteInput({field,id="autocomplete",label}){
     const [loading, setLoading] = useState(false);
     const inputRef=useRef()
     const [currentData,setCurrentData]=useState([])
+
     useEffect(()=>{
         const isNewFilter = JSON.stringify(selectedFilters[field.uiName]) !== JSON.stringify(currentData);
         if(isNewFilter) {
@@ -23,16 +24,18 @@ export function AutoCompleteInput({field,id="autocomplete",label}){
         }
 
     },[currentData])
+    useEffect(()=>{
+        const newData=currentData.filter((item)=>data.includes(item))
+        if(newData.length!==currentData.length){
+            setCurrentData(newData)
+        }
+    },[data])
    async function getData(){
         setLoading(true)
        const filterArgs = FILTER_FIELDS.map(
              (field) => selectedFilters[field.uiName],
        );
         const fetchedData=await getFiltersFilteredByArrgs(field.uiName,field.filterId,search,filterArgs)
-        if(currentData?.length>0){
-            const newData=currentData.filter((item)=>fetchedData.includes(item))
-            setCurrentData(newData)
-        }
         setData(fetchedData)
         setLoading(false)
     }
@@ -42,7 +45,6 @@ export function AutoCompleteInput({field,id="autocomplete",label}){
             window.setTimeout(() => {
                 inputRef.current.blur();
             }, 50);
-
         }else{
         setCurrentData(value)
         }
@@ -54,7 +56,7 @@ export function AutoCompleteInput({field,id="autocomplete",label}){
                 onChange={(event, value) => handleChange(event, value)}
                 multiple={id !== "filter_date"}
                 id={id}
-                value={currentData}
+                value={currentData.filter((item)=>data.includes(item))}
                 options={data}
                 loading={loading}
                 onFocus={getData}
