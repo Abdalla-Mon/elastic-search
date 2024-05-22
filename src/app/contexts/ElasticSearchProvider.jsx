@@ -16,12 +16,15 @@ export const ElasticSearchProvider = ({ children }) => {
     const [size, setSize] = useState(10);
     const [error, setError] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState(initialFilterState);
+    const [endIndex, setEndIndex] = useState(2);
+
     const fetchData = async () => {
         setLoading(true);
         setError(null);
         try {
 const res=await fetch(`/api/search?q=${search}&page=${page}&size=${size}&selectedFilters=${JSON.stringify(selectedFilters)}`)
 const data=await res.json()
+            setEndIndex(2)
             setData(data);
         } catch (err) {
             setError(err.message);
@@ -48,6 +51,7 @@ const data=await res.json()
                     fetchData,
                     selectedFilters,
                     setSelectedFilters,
+                    endIndex, setEndIndex
                 }}
           >
               {children}

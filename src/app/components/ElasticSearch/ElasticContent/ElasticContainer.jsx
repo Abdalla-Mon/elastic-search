@@ -6,8 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function ElasticContainer(){
 
-    let {data, loading} = useContext(ElasticSearchContext)
-        const [endIndex, setEndIndex] = useState(2);
+    let {data, loading,endIndex, setEndIndex} = useContext(ElasticSearchContext)
 
     if(loading){
         return (
@@ -25,7 +24,7 @@ export default function ElasticContainer(){
     }
     data = data.documents;
     const loadMoreItems = () => {
-        setEndIndex((prevEndIndex) => prevEndIndex + 2); // Load 2
+        setEndIndex((prevEndIndex) => prevEndIndex + 2);
     };
     return (
           <InfiniteScroll

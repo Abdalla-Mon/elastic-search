@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.highlighted_text{
+    background-color: yellow;
+}

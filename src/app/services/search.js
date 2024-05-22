@@ -1,6 +1,6 @@
 "use server";
 import { Client } from "@elastic/elasticsearch";
-import { FILTER_FIELDS, indexName, queryFields } from "@/app/filterFields";
+import {descriptionField, FILTER_FIELDS, indexName, queryFields} from "@/app/filterFields";
 import {createRangeObject, createTermsObject} from "@/app/function/function";
 
 const client = new Client({
@@ -58,6 +58,14 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
                 },
             },
             aggs: aggs,
+            highlight: { // Add this block to your existing code
+                fields: {
+                    [descriptionField]: {
+                        "number_of_fragments": 0 // This will return the entire content of the 'text' field as a single fragment.
+                    }                },
+                pre_tags: ["<span class='highlighted_text'>"], // The tags to use for the highlighted text.
+                post_tags: ["</span>"]
+            }
 
         },
     };
@@ -65,7 +73,16 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
     const response = await client.search(elasticSearchParams);
     const data = response;
 
-    const documents = data.hits.hits.map((hit) => hit._source);
+    const documents = data.hits.hits.map((hit) => {
+
+        const text = hit.highlight && hit.highlight.text
+              ? hit.highlight.text.join(' ')
+              : hit._source.text;
+        return {
+            ...hit._source,
+            text,
+        };
+    });
     const total = data.hits.total;
     const uniqueOrganizations = data.aggregations.unique_organizations.buckets.map(
           (bucket) => bucket.key,
@@ -74,6 +91,6 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
         documents,
         total: total.value,
         uniqueOrganizations,
-        uniques:data.aggregations
+        uniques:data.hits.hits
     };
 }

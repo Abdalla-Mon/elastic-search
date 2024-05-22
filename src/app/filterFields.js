@@ -27,6 +27,7 @@ export const FILTER_FIELDS = [
 ];
 
 export const queryFields = ["title", "text"];
+
 export const titleFields = queryFields[0];
 export const descriptionField = queryFields[1];
 export const displayFields = [

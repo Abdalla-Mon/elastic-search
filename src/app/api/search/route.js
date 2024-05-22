@@ -1,6 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
-import { FILTER_FIELDS, indexName, queryFields } from "@/app/filterFields";
-import {createRangeObject, createTermsObject} from "@/app/function/function";
+
 import {handleSearch} from "@/app/services/search";
 
 const client = new Client({

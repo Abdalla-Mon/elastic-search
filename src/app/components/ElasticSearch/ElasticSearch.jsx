@@ -13,7 +13,6 @@ export default function ElasticSearch() {
   const { search, page, size, error, fetchData, selectedFilters, data } =
     useContext(ElasticSearchContext);
 
-
   const [show, setShow] = useState(false);
   useEffect(() => {
     fetchData();

@@ -2,14 +2,13 @@ import { useContext, useEffect, useRef, useState, useMemo } from "react";
 import { Box, Button, Card, CardContent, Link, Typography } from "@mui/material";
 import { ElasticSearchContext } from "@/app/contexts/ElasticSearchContext";
 import { descriptionField, displayFields, titleFields } from "@/app/filterFields";
-
+import parse from "html-react-parser";
 export function ElasticCard({ data }) {
   const { search,loading } = useContext(ElasticSearchContext);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const ref = useRef();
   useEffect(() => {
-      // console.log("rendered")
     const checkOverflow = () => {
       if (ref.current) {
         setIsOverflowing(ref.current.scrollHeight > ref.current.offsetHeight);
@@ -21,18 +20,10 @@ export function ElasticCard({ data }) {
     if(loading){
         return null;
     }
-    const description = data[descriptionField].toLowerCase();
-    const searchTerms = search.toLowerCase().split(' ');
+    const description = data[descriptionField]
 
-    const regex = new RegExp(`(${searchTerms.join('|')})`, 'gi');
 
-    const parts = description.split(regex);
-
-    const highlightedText = parts.map((part, index) =>
-          searchTerms.includes(part.toLowerCase())
-                ? <span key={index} style={{backgroundColor: 'yellow'}}>{part}</span>
-                : part
-    );
+    const highlightedText =parse(description)
 
   return (
         <Card sx={{ boxShadow: 3 }} className="border border-gray-200">
