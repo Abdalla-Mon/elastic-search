@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 
 import { ElasticSearchContext } from "@/app/contexts/ElasticSearchContext";
 import { FILTER_FIELDS } from "@/app/filterFields";
-import {AutoCompleteInput} from "@/app/components/ElasticSearch/CategoriesFilter/NewCategoriesFilter";
+import {AutoCompleteInput} from "@/app/components/ElasticSearch/CategoriesFilter/AutoCompleteInput";
 import {initialFilterState} from "@/app/contexts/ElasticSearchProvider";
 
 export function CategoriesFilter() {

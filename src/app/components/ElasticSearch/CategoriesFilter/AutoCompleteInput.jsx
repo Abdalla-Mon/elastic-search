@@ -29,6 +29,10 @@ export function AutoCompleteInput({field,id="autocomplete",label}){
              (field) => selectedFilters[field.uiName],
        );
         const fetchedData=await getFiltersFilteredByArrgs(field.uiName,field.filterId,search,filterArgs)
+        if(currentData?.length>0){
+            const newData=currentData.filter((item)=>fetchedData.includes(item))
+            setCurrentData(newData)
+        }
         setData(fetchedData)
         setLoading(false)
     }
