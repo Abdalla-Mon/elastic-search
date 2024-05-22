@@ -7,11 +7,10 @@ export default function ElasticSearchField() {
     const inputRef = useRef();
 
     return (
-          <div className="flex gap-5 items-center">
+          <form noValidate onSubmit={(e)=>e.preventDefault()} className="flex gap-5 items-center">
               <FormControl
               className={"relative w-full"}
               >
-
               <TextField
                     inputRef={inputRef}
                     id="outlined-basic"
@@ -19,6 +18,7 @@ export default function ElasticSearchField() {
                     variant="filled"
                     fullWidth
               />
+
                   <IconButton
                         onClick={() => {
                             setLoading(true);
@@ -32,7 +32,9 @@ export default function ElasticSearchField() {
                   </IconButton>
               </FormControl>
               <Button
+                    type={"submit"}
                     onClick={() => {
+
                         if(inputRef.current.value.trim() === "") {
                             setLoading(true);
                             setSearch("");
@@ -45,6 +47,6 @@ export default function ElasticSearchField() {
               >
                   Search
               </Button>
-          </div>
+          </form>
     );
 }
