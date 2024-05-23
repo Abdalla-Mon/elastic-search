@@ -3,7 +3,7 @@ import { ElasticSearchContext } from "@/app/contexts/ElasticSearchContext";
 import { useContext, useRef } from "react";
 
 export default function ElasticSearchField() {
-    const { setSearch,setLoading } = useContext(ElasticSearchContext);
+    const { setSearch,setLoading,search } = useContext(ElasticSearchContext);
     const inputRef = useRef();
 
     return (
@@ -21,10 +21,13 @@ export default function ElasticSearchField() {
 
                   <IconButton
                         onClick={() => {
-                            setLoading(true);
-                            inputRef.current.value = "";
-                            setSearch("");
-                        }}
+                            if(inputRef.current.value.trim() === "" && search === "") return
+                                setLoading(true);
+                                inputRef.current.value = "";
+                                setSearch("");
+
+                            }
+                        }
                         className={"absolute right-0 top-1/2 transform -translate-y-1/2 w-[50px] h-[50px]   text-xl  bg-white hover:bg-gray-200"}
                   >
 
@@ -35,7 +38,7 @@ export default function ElasticSearchField() {
                     type={"submit"}
                     onClick={() => {
 
-                        if(inputRef.current.value.trim() === "") {
+                        if(inputRef.current.value.trim() === ""&& search !== "") {
                             setLoading(true);
                             setSearch("");
                             return;
