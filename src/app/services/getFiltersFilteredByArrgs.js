@@ -1,7 +1,7 @@
 "use server";
 import { Client } from "@elastic/elasticsearch";
 import { FILTER_FIELDS, indexName, queryFields } from "@/app/filterFields";
-import {createRangeObject, createTermsObject} from "@/app/function/function";
+import {createRangeObject, createTermsObject} from "@/app/functions/functions";
 
 
 

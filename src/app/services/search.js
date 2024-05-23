@@ -1,7 +1,7 @@
 "use server";
 import { Client } from "@elastic/elasticsearch";
 import {descriptionField, FILTER_FIELDS, indexName, queryFields} from "@/app/filterFields";
-import {createRangeObject, createTermsObject} from "@/app/function/function";
+import {createRangeObject, createTermsObject} from "@/app/functions/functions";
 
 const client = new Client({
     node: process.env.ELASTIC_NODE_URL,
@@ -35,8 +35,7 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
         unique_organizations: {
             terms: {
                 field: "organisation_name.keyword",
-                size: 1000,
-            show_term_doc_count_error: true
+                size: 100,
             },
 
         },
@@ -61,7 +60,7 @@ export async  function handleSearch(q, page = 1, size = 2, selectedFilters) {
             highlight: { // Add this block to your existing code
                 fields: {
                     [descriptionField]: {
-                        "number_of_fragments": 0 // This will return the entire content of the 'text' field as a single fragment.
+                        "number_of_fragments": 0 
                     }                },
                 pre_tags: ["<span class='highlighted_text'>"], // The tags to use for the highlighted text.
                 post_tags: ["</span>"]
